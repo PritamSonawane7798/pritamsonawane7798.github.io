@@ -109,7 +109,12 @@ img { display: block; max-width: 100%; height: auto; }
 .btn-small { min-height: 42px; padding: 8px 20px; font-size: 0.95rem; }
 
 /* Hero */
-.hero { padding: clamp(36px, 6vw, 84px) var(--gutter) 0; }
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(32px, 4vw, 56px);
+  padding: clamp(36px, 6vw, 84px) var(--gutter) 0;
+}
 .hero h1 {
   max-width: 18ch;
   font-size: clamp(3rem, 7.4vw, 7rem);
@@ -117,26 +122,25 @@ img { display: block; max-width: 100%; height: auto; }
   letter-spacing: -0.045em;
   text-wrap: balance;
 }
-.hero-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px 48px;
-  margin-top: clamp(24px, 3.4vw, 44px);
-}
 .lede {
   max-width: 52ch;
+  margin-top: clamp(24px, 3vw, 40px);
   color: var(--muted);
   font-size: clamp(1.08rem, 1rem + 0.34vw, 1.3rem);
   line-height: 1.45;
 }
-.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(24px, 2.6vw, 36px);
+}
 
 .stage {
   position: relative;
   overflow: hidden;
-  margin-top: clamp(32px, 4vw, 56px);
+  display: grid;
+  place-items: center;
   padding: clamp(16px, 3vw, 44px);
   border-radius: var(--radius);
   background:
@@ -291,6 +295,17 @@ img { display: block; max-width: 100%; height: auto; }
   font-size: 0.93rem;
 }
 .site-footer a:hover { color: var(--ink); }
+
+/* Side-by-side hero that fits the first screen; the header is about 70px. */
+@media (min-width: 1001px) {
+  .hero {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: center;
+    padding-top: clamp(20px, 2.6vw, 40px);
+  }
+  .hero h1 { font-size: clamp(3.2rem, 5.1vw, 5.6rem); }
+  .stage img { max-height: calc(100svh - 190px); object-fit: contain; }
+}
 
 /* Reveal only applies when JavaScript has run. */
 .js .reveal {
