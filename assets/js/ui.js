@@ -36,6 +36,19 @@
     });
   }
 
+  // Fade the background colour to suit the section in the middle of the screen.
+  const washes = [...document.querySelectorAll('.wash i')];
+  if ('IntersectionObserver' in window) {
+    const toneObserver = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const tone = entry.target.dataset.tone;
+        washes.forEach((wash) => wash.classList.toggle('is-on', wash.dataset.tone === tone));
+      }
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    document.querySelectorAll('[data-tone]:not(i)').forEach((section) => toneObserver.observe(section));
+  }
+
   const header = document.querySelector('.site-header');
   const onScroll = () => header.classList.toggle('is-stuck', scrollY > 40);
   addEventListener('scroll', onScroll, { passive: true });
