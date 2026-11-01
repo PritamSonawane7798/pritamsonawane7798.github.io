@@ -116,7 +116,7 @@ class Scene {
 }
 
 const DEFS = `<defs>
-<linearGradient id="topBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f86ff"/><stop offset="1" stop-color="#3350e0"/></linearGradient>
+<linearGradient id="topBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f86ff"/><stop offset="1" stop-color="#3351e1"/></linearGradient>
 <linearGradient id="topDeep" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3c51d8"/><stop offset="1" stop-color="#2a36ae"/></linearGradient>
 <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b3fc0"/><stop offset="1" stop-color="#5a2fb8"/></linearGradient>
 <linearGradient id="screenLight" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9e8ff"/></linearGradient>
@@ -524,10 +524,38 @@ function chat() {
   return s.toSVG('A support robot chatting on a large screen while two customers read answers on their phones');
 }
 
+// The scenes are drawn in one base palette, then recoloured here. Models stay
+// white so each one sits cleanly on the coloured tile behind it on the page.
+function applyTheme(svg, { accent, accentSoft, accentDeep, second, secondDeep }) {
+  const map = {
+    '#4f86ff': '#ffffff', '#3351e1': '#f6f3ef', '#3f63e6': '#ffffff',
+    '#2a45c4': '#e4dfe0', '#1c2f9c': '#c9c2c8',
+    '#3c51d8': '#fdfbf8', '#2a36ae': '#efeae5', '#26349f': '#dcd6d8', '#1a2479': '#c2bbc2',
+    '#2f3f9e': '#3c3850', '#1d2877': '#2a2639', '#141b5c': '#1d1a2a', '#20307f': '#2a2639',
+    '#2b3fc0': '#2f2b42', '#5a2fb8': '#4d3d6a',
+    '#0d1250': accentDeep, '#7fd4ff': '#ffffff',
+    '#56e0f7': accent, '#24add9': accentDeep, '#1684b8': accentDeep,
+    '#ff78a6': second, '#e84585': secondDeep, '#b92c69': secondDeep, '#ff6d9f': second, '#ff9cc0': second, '#ff5f97': second,
+    '#a9e9ff': accentSoft, '#7ce9ff': accentSoft, '#8fe9ff': accent, '#5f7bff': accentDeep, '#3a63ee': accent,
+    '#c6d6f7': '#e6e1e6', '#9db4ea': '#cfc8cf', '#d9e8ff': '#f1ece8',
+    '#3350e0': '#2a2639',
+  };
+  return svg.replace(/#[0-9a-fA-F]{6}\b/g, (color) => map[color.toLowerCase()] || color);
+}
+
+const THEMES = {
+  hero: { accent: '#ff9b54', accentSoft: '#ffd2ad', accentDeep: '#b5552b', second: '#f0628a', secondDeep: '#b83a63' },
+  consult: { accent: '#f5a742', accentSoft: '#ffdca6', accentDeep: '#a9641c', second: '#ec6f5c', secondDeep: '#b34a3a' },
+  web: { accent: '#7c8cf0', accentSoft: '#cdd3fb', accentDeep: '#4a4fa6', second: '#ef7fa8', secondDeep: '#b84f7a' },
+  custom: { accent: '#3fbf9f', accentSoft: '#b5ecdb', accentDeep: '#1f7a66', second: '#f5a742', secondDeep: '#b5761f' },
+  agents: { accent: '#a079ee', accentSoft: '#dccdfa', accentDeep: '#5f3fa8', second: '#f0628a', secondDeep: '#b83a63' },
+  chat: { accent: '#ef7c6b', accentSoft: '#ffd0c6', accentDeep: '#a84636', second: '#f5a742', secondDeep: '#b5761f' },
+};
+
 mkdirSync(OUT, { recursive: true });
 const scenes = { hero, consult, web, custom, agents, chat };
 for (const [name, build] of Object.entries(scenes)) {
-  const svg = build();
+  const svg = applyTheme(build(), THEMES[name]);
   writeFileSync(join(OUT, `${name}.svg`), svg);
   console.log(name, Math.round(svg.length / 1024), 'KB');
 }
